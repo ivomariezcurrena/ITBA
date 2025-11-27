@@ -25,6 +25,9 @@ function Navbar({ cantidadCarrito }) {
         <li>
           <Link to="/admin/crear-producto">CREAR PRODUCTO</Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/perfil">MI PERFIL</Link>
+        </li>
       </ul>
     </nav>
   )

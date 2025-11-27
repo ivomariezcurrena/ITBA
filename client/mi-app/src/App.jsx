@@ -8,6 +8,8 @@ import Productos from './pages/Productos'
 import ProductoDetalle from './pages/ProductoDetalle'
 import Contacto from './pages/Contacto'
 import CrearProducto from './pages/Crear-Producto'
+import Perfil from './pages/Perfil'
+
 
 function App() {
   const [productos, setProductos] = useState([])
@@ -49,6 +51,7 @@ function App() {
           />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/admin/crear-producto" element={<CrearProducto />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
       </main>
 

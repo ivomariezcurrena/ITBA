@@ -17,7 +17,7 @@ export default function Login() {
 
 
   const TEST_ADMIN_EMAIL = "admin@gmail.com"
-  const TEST_ADMIN_PASSWORD = "admin"
+  const TEST_ADMIN_PASSWORD = "●●●●●●●●"
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -97,13 +97,13 @@ export default function Login() {
 
 
       {(TEST_ADMIN_EMAIL || TEST_ADMIN_PASSWORD) && (
-        <div className="test-credentials" style={{marginTop:12, padding:10, border:'1px dashed #ccc', borderRadius:6, background:'#fafafa'}}>
+        <div className="test-credentials">
           <strong>Credenciales de prueba:</strong>
-          <div style={{marginTop:6}}>
-            <span style={{display:'block'}}><strong>Email:</strong> {TEST_ADMIN_EMAIL || <em>no definido</em>}</span>
-            <span style={{display:'block'}}><strong>Contraseña:</strong> {TEST_ADMIN_PASSWORD ? '●●●●●●●●' : <em>no definida</em>}</span>
+          <div>
+            <span><strong>Email:</strong> {TEST_ADMIN_EMAIL || <em>no definido</em>}</span>
+            <span><strong>Contraseña:</strong> {TEST_ADMIN_PASSWORD ? '●●●●●●●●' : <em>no definida</em>}</span>
           </div>
-          <div style={{marginTop:8}}>
+          <div>
             <button
               type="button"
               className="btn-small"
@@ -112,7 +112,6 @@ export default function Login() {
             <button
               type="button"
               className="btn-small"
-              style={{marginLeft:8}}
               onClick={() => { setEmail(''); setPassword(''); }}
             >Limpiar</button>
           </div>

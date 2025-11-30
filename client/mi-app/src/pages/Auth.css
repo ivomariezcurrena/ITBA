@@ -141,3 +141,56 @@
 .link-button:hover {
   color: var(--color-vara-de-oro);
 }
+
+.test-credentials {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  border: 1px dashed var(--color-siena-tostado);
+  border-radius: 8px;
+  background: var(--color-alabastro-calido);
+  font-family: var(--ff-primary);
+  color: var(--color-gris-800);
+}
+
+.test-credentials strong {
+  font-weight: var(--fw-bold);
+  color: var(--color-siena-tostado);
+}
+
+.test-credentials div {
+  margin-top: 0.5rem;
+}
+
+.test-credentials span {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.test-credentials em {
+  color: var(--color-gris-700);
+  font-style: italic;
+}
+
+.btn-small {
+  background-color: var(--color-siena-tostado);
+  color: var(--color-blanco);
+  font-family: var(--ff-primary);
+  font-weight: var(--fw-bold);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.btn-small:hover {
+  background-color: var(--color-vara-de-oro);
+  transform: translateY(-1px);
+}
+
+.btn-small:first-of-type {
+  margin-left: 0;
+}
+

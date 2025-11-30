@@ -10,13 +10,27 @@ const ProductoDetalle = ({ agregarAlCarrito }) => {
 
   useEffect(() => {
     console.log("Cargando detalle del producto con ID:", id);
-    fetch(`${import.meta.env.VITE_API_URL}/api/productos/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error("No se pudo cargar el producto");
-        return res.json();
+    const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+    const url = `${API_BASE}/api/productos/${id}`;
+
+    fetch(url)
+      .then(async (res) => {
+        if (!res.ok) {
+          let txt = await res.text().catch(() => null);
+          throw new Error(`No se pudo cargar el producto: ${res.status} ${res.statusText}${txt ? ' - ' + txt : ''}`);
+        }
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          return res.json();
+        }
+        const txt = await res.text().catch(() => null);
+        throw new Error('Respuesta inesperada del servidor (no JSON): ' + (txt ? txt.substring(0, 300) : 'sin cuerpo'));
       })
       .then(data => setProducto(data))
-      .catch(() => setProducto(null))
+      .catch((err) => {
+        console.error('Error cargando producto:', err);
+        setProducto(null);
+      })
       .finally(() => setLoading(false));
   }, [id]);
 

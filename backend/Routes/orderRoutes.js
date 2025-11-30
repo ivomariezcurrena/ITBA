@@ -1,7 +1,7 @@
 const express = require('express');
 const Order = require('../Models/Order');
 const Product = require('../Models/Product');
-const { authenticateToken } = require('../middlewares/auth');
+const { authenticateToken, requireAdmin } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -51,8 +51,48 @@ router.post('/', authenticateToken, async (req, res, next) => {
 router.get('/', authenticateToken, async (req, res, next) => {
   try {
     const user = req.user;
-    const orders = await Order.find({ user: user._id }).populate('items.productId', 'nombre precio');
+    // Si el usuario es admin, devolver solo sus pedidos (ruta /all ofrece todos)
+    const orders = await Order.find({ user: user._id })
+      .populate('items.productId', 'nombre precio imagenUrl')
+      .sort({ createdAt: -1 });
     res.json(orders);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Obtener todos los pedidos (solo admin)
+router.get('/all', authenticateToken, requireAdmin, async (req, res, next) => {
+  try {
+    const orders = await Order.find().populate('user', 'email nombre role').populate('items.productId', 'nombre precio');
+    res.json(orders);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Actualizar estado de un pedido (solo admin)
+router.put('/:id/status', authenticateToken, requireAdmin, async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const orderId = req.params.id;
+
+    const validStatuses = ['pendiente', 'procesando', 'enviado', 'cancelado'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Estado no válido' });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { estado: status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: 'Pedido no encontrado' });
+    }
+
+    res.json(updatedOrder);
   } catch (err) {
     next(err);
   }

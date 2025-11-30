@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Card({ producto = {}, verDetalle }) {
   const navigate = useNavigate();
-  const VITE_API_URL = import.meta.env.VITE_API_URL;
+  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
   const imagenPath = producto.imagenUrl
     ? producto.imagenUrl.match(/^https?:\/\//i)
       ? producto.imagenUrl
-      : `${VITE_API_URL}${producto.imagenUrl.startsWith('/') ? '' : '/'}${producto.imagenUrl}`
+      : `${API_BASE}${producto.imagenUrl.startsWith('/') ? '' : '/'}${producto.imagenUrl}`
     : null
 
   return (

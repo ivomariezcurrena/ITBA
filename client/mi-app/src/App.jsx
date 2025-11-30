@@ -10,15 +10,25 @@ import Contacto from './pages/Contacto'
 import CrearProducto from './pages/Crear-Producto'
 import Login from './pages/Login'
 import Registro from './pages/Registro'
+import Perfil from './pages/Perfil'
+import MisPedidos from './pages/MisPedidos'
+import Checkout from './pages/Checkout'
+import Carrito from './pages/Carrito'
 import { useAuth } from './context/AuthContext'
+import AdminPedidos from './pages/AdminPedidos'
 import RequireAdmin from './components/RequireAdmin'
+import RequireAuth from './components/RequireAuth'
 
 function App() {
   const { isAuthenticated } = useAuth()
   const [productos, setProductos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [cantidadCarrito, setCantidadCarrito] = useState(0)
+  const [carrito, setCarrito] = useState([])
+
+  const cantidadCarrito = carrito.reduce((total, producto) => total + producto.cantidad, 0)
+  const totalCarrito = carrito.reduce((total, producto) => total + producto.precio * producto.cantidad, 0);
+
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/productos`)
@@ -37,51 +47,105 @@ function App() {
   }, [])
 
   const agregarAlCarrito = (producto) => {
-    if (producto) setCantidadCarrito(cantidadCarrito + 1)
+    setCarrito((prevCarrito) => {
+      const productoExistente = prevCarrito.find((item) => item._id === producto._id)
+      if (productoExistente) {
+        return prevCarrito.map((item) =>
+          item._id === producto._id ? { ...item, cantidad: item.cantidad + 1 } : item,
+        )
+      } else {
+        return [...prevCarrito, { ...producto, cantidad: 1 }]
+      }
+    })
+  }
+
+  const eliminarDelCarrito = (productoId) => {
+    setCarrito((prevCarrito) => prevCarrito.filter((item) => item._id !== productoId))
+  }
+
+  const vaciarCarrito = () => {
+    setCarrito([])
   }
 
   return (
     <BrowserRouter>
-      {/* Mostrar Navbar sólo si el usuario está autenticado */}
-      {isAuthenticated && <Navbar cantidadCarrito={cantidadCarrito} />}
+      {isAuthenticated && <Navbar cantidadCarrito={cantidadCarrito} vaciarCarrito={vaciarCarrito} />}
 
       <main>
-        {/* Si no está autenticado, exponer únicamente login/registro y forzar redirect */}
-        {!isAuthenticated ? (
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/registro" element={<Registro />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/productos" element={<Productos />} />
-            <Route
-              path="/productos/:id"
-              element={<ProductoDetalle agregarAlCarrito={agregarAlCarrito} />}
-            />
-            <Route path="/contacto" element={<Contacto />} />
-            <Route path="/login" element={<Navigate to="/" replace />} />
-            <Route path="/registro" element={<Navigate to="/" replace />} />
-            <Route
-              path="/admin/crear-producto"
-              element={
-                <RequireAdmin>
-                  <CrearProducto />
-                </RequireAdmin>
-              }
-            />
-          </Routes>
-        )}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/productos" element={<Productos />} />
+          <Route
+            path="/productos/:id"
+            element={<ProductoDetalle agregarAlCarrito={agregarAlCarrito} />}
+          />
+          <Route path="/contacto" element={<Contacto />} />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+
+          <Route
+            path="/perfil"
+            element={
+              <RequireAuth>
+                <Perfil />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/mis-pedidos"
+            element={
+              <RequireAuth>
+                <MisPedidos />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/carrito"
+            element={
+              <RequireAuth>
+                <Carrito
+                  carrito={carrito}
+                  eliminarDelCarrito={eliminarDelCarrito}
+                  vaciarCarrito={vaciarCarrito}
+                />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <RequireAuth>
+                <Checkout carrito={carrito} total={totalCarrito} vaciarCarrito={vaciarCarrito} />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/admin/crear-producto"
+            element={
+              <RequireAdmin>
+                <CrearProducto />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/pedidos"
+            element={
+              <RequireAdmin>
+                <AdminPedidos />
+              </RequireAdmin>
+            }
+          />
+
+          <Route path="*" element={isAuthenticated ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
+        </Routes>
       </main>
 
-      {/* Mostrar Footer sólo si el usuario está autenticado */}
       {isAuthenticated && <Footer />}
     </BrowserRouter>
   )
 }
 
 export default App
-
 

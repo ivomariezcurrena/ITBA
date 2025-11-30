@@ -1,35 +1,81 @@
+import { useState } from 'react'
 import './Navbar.css'
 import logo from '../assets/logo.svg'
-import { Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-function Navbar({ cantidadCarrito }) {
-  const { isAuthenticated, user } = useAuth()
+function Navbar({ cantidadCarrito, vaciarCarrito }) {
+  const { isAuthenticated, user, logout } = useAuth()
+  const [menuAbierto, setMenuAbierto] = useState(false)
+  const navigate = useNavigate()
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto)
+  }
+
+  const closeMenu = () => {
+    setMenuAbierto(false)
+  }
+
+  const handleLogout = () => {
+    logout()
+    vaciarCarrito()
+    closeMenu()
+    navigate('/login')
+  }
 
   return (
     <nav>
-      <Link to="/">
+      <Link to="/" className="nav-brand" onClick={closeMenu}>
         <img src={logo} alt="logo" />
+        <h2>Hermanos Jota</h2>
       </Link>
-      <h2>Hermanos Jota</h2>
-      <ul>
+
+      <button className="menu-hamburguesa" onClick={toggleMenu}>
+        <i className={`fa-solid ${menuAbierto ? 'fa-xmark' : 'fa-bars'}`}></i>
+      </button>
+      
+      <ul className={`navegacion ${menuAbierto ? 'abierto' : ''}`}>
         <li>
-          <Link to="/productos">PRODUCTOS</Link>
+          <NavLink to="/productos" onClick={closeMenu}>Productos</NavLink>
         </li>
         <li>
-          <Link to="/contacto">CONTACTO</Link>
+          <NavLink to="/contacto" onClick={closeMenu}>Contacto</NavLink>
         </li>
+        
+        {isAuthenticated && user?.role === 'admin' && (
+          <>
+            <li><NavLink to="/admin/crear-producto" onClick={closeMenu}>Crear Producto</NavLink></li>
+            <li><NavLink to="/admin/pedidos" onClick={closeMenu}>Admin Pedidos</NavLink></li>
+          </>
+        )}
+        
+        {isAuthenticated && user?.role !== 'admin' && (
+          <li><NavLink to="/mis-pedidos" onClick={closeMenu}>Mis Pedidos</NavLink></li>
+        )}
+
+        {isAuthenticated && (
+          <li><NavLink to="/perfil" onClick={closeMenu}>Mi Perfil</NavLink></li>
+        )}
+        
         <li>
-          <Link to="#carrito">
+          <NavLink to="/carrito" className="cart-link" onClick={closeMenu}>
             <i className="fa-solid fa-cart-shopping"></i>
-            {cantidadCarrito > 0 && <span>{cantidadCarrito}</span>}
-          </Link>
+            {cantidadCarrito > 0 && <span className="cart-badge">{cantidadCarrito}</span>}
+          </NavLink>
         </li>
-        {/* Mostrar enlace admin sólo a usuarios autenticados con role 'admin' */}
-        {isAuthenticated && user && user.role === 'admin' && (
+
+        {isAuthenticated ? (
           <li>
-            <Link to="/admin/crear-producto">CREAR PRODUCTO</Link>
+            <button className="link-button logout-button" onClick={handleLogout}>
+              Logout
+            </button>
           </li>
+        ) : (
+          <>
+            <li><NavLink to="/login" onClick={closeMenu}>Login</NavLink></li>
+            <li><NavLink to="/registro" onClick={closeMenu}>Registro</NavLink></li>
+          </>
         )}
       </ul>
     </nav>
@@ -37,4 +83,3 @@ function Navbar({ cantidadCarrito }) {
 }
 
 export default Navbar
-

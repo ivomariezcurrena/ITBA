@@ -17,7 +17,7 @@ export default function Login() {
 
 
   const TEST_ADMIN_EMAIL = "admin@gmail.com"
-  const TEST_ADMIN_PASSWORD = "●●●●●●●●"
+  const TEST_ADMIN_PASSWORD = "admin"
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -101,7 +101,7 @@ export default function Login() {
           <strong>Credenciales de prueba:</strong>
           <div>
             <span><strong>Email:</strong> {TEST_ADMIN_EMAIL || <em>no definido</em>}</span>
-            <span><strong>Contraseña:</strong> {TEST_ADMIN_PASSWORD ? '●●●●●●●●' : <em>no definida</em>}</span>
+            <span><strong>Contraseña:</strong> {TEST_ADMIN_PASSWORD ||  <em>no definida</em>}</span>
           </div>
           <div>
             <button

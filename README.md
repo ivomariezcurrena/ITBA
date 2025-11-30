@@ -12,7 +12,7 @@ Sitio de catálogo y venta de productos para la mueblería "Hermanos Jota".
 
 ## Enlaces a los sitios desplegados
 
-- **Frontend (React):** [https://hermanosjota-gray.vercel.app/](https://hermanosjota-gray.vercel.app/)
+- **Frontend (React):** [https://itba-120.vercel.app/login](https://itba-120.vercel.app/login)
 - **Backend (API):** [https://itba.onrender.com/](https://itba.onrender.com/)
 
 ---

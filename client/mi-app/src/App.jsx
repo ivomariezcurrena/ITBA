@@ -73,7 +73,7 @@ function App() {
 
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />} />
           <Route path="/productos" element={<Productos />} />
           <Route
             path="/productos/:id"

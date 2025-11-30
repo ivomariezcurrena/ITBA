@@ -15,6 +15,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+
+  const TEST_ADMIN_EMAIL = "admin@gmail.com"
+  const TEST_ADMIN_PASSWORD = "admin"
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
@@ -90,6 +94,30 @@ export default function Login() {
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
+
+
+      {(TEST_ADMIN_EMAIL || TEST_ADMIN_PASSWORD) && (
+        <div className="test-credentials" style={{marginTop:12, padding:10, border:'1px dashed #ccc', borderRadius:6, background:'#fafafa'}}>
+          <strong>Credenciales de prueba:</strong>
+          <div style={{marginTop:6}}>
+            <span style={{display:'block'}}><strong>Email:</strong> {TEST_ADMIN_EMAIL || <em>no definido</em>}</span>
+            <span style={{display:'block'}}><strong>Contraseña:</strong> {TEST_ADMIN_PASSWORD ? '●●●●●●●●' : <em>no definida</em>}</span>
+          </div>
+          <div style={{marginTop:8}}>
+            <button
+              type="button"
+              className="btn-small"
+              onClick={() => { setEmail(TEST_ADMIN_EMAIL); setPassword(TEST_ADMIN_PASSWORD); }}
+            >Usar credenciales</button>
+            <button
+              type="button"
+              className="btn-small"
+              style={{marginLeft:8}}
+              onClick={() => { setEmail(''); setPassword(''); }}
+            >Limpiar</button>
+          </div>
+        </div>
+      )}
 
       <div className="auth-alternate">
         <span>¿No tienes una cuenta? </span>

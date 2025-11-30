@@ -8,7 +8,7 @@ const router = express.Router();
 // Registro
 router.post('/registro', async (req, res, next) => {
   try {
-    const { email, password, nombre } = req.body;
+    const { email, password, nombre, role } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'Email y contraseña son requeridos' });
     }
@@ -20,9 +20,10 @@ router.post('/registro', async (req, res, next) => {
 
     const saltRounds = 10;
     const hashed = await bcrypt.hash(password, saltRounds);
+    const userRole = role ?? 'user';
 
     // Por seguridad, siempre crear usuarios con rol 'user' desde el registro público
-    const user = new User({ email: email.toLowerCase().trim(), password: hashed, nombre, role: 'user' });
+    const user = new User({ email: email.toLowerCase().trim(), password: hashed, nombre, role: userRole });
     const saved = await user.save();
 
     const userSafe = { id: saved._id, email: saved.email, nombre: saved.nombre, role: saved.role, createdAt: saved.createdAt };

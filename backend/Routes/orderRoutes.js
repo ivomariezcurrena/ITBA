@@ -5,7 +5,7 @@ const { authenticateToken, requireAdmin } = require('../middlewares/auth');
 
 const router = express.Router();
 
-// Crear pedido (protegido)
+
 router.post('/', authenticateToken, async (req, res, next) => {
   try {
     const user = req.user; // set by authenticateToken
@@ -16,7 +16,7 @@ router.post('/', authenticateToken, async (req, res, next) => {
       return res.status(400).json({ error: 'Items del pedido requeridos' });
     }
 
-    // Calcular total simple: sumar cantidad * precio (si precio no viene, intentar recuperar del producto)
+
     let total = 0;
     const processedItems = [];
 

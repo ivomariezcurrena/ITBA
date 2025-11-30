@@ -4,7 +4,9 @@ const chalk = require("chalk");
 const path = require("path");
 const dotenv = require("dotenv");
 const db = require("./config/db");
-const productRoutes = require("./Routes/productRoutes");
+const productRoutes = require("./routes/productRoutes");
+const authRoutes = require("./routes/authRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 dotenv.config();
 
@@ -33,6 +35,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use('/api/productos/', productRoutes);
+app.use('/api', authRoutes);
+app.use('/api/pedidos', orderRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Recurso no encontrado" });

@@ -2,6 +2,7 @@ const Product = require('../Models/Product');
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const { authenticateToken, requireAdmin } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -43,7 +44,8 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST con imagen
-router.post('/', upload.single('imagen'), async (req, res, next) => {
+// Crear producto (solo admin)
+router.post('/', authenticateToken, requireAdmin, upload.single('imagen'), async (req, res, next) => {
   try {
     const { nombre, descripcion, precio, stock, imagenUrl: imagenUrlBody, medidas, materiales, acabado, caracteristicas } = req.body;
     let imagenUrl = '';
@@ -72,7 +74,8 @@ router.post('/', upload.single('imagen'), async (req, res, next) => {
   }
 });
 
-router.put('/:id', async (req, res, next) => {
+// Modificar producto (solo admin)
+router.put('/:id', authenticateToken, requireAdmin, async (req, res, next) => {
     const { id } = req.params;
     const productNewData = req.body;
     try {
@@ -94,7 +97,8 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+// Eliminar producto (solo admin)
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res, next) => {
     const { id } = req.params;
     try {
         const productDeleted = await Product.findByIdAndDelete(id);

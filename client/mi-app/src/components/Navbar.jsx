@@ -1,8 +1,11 @@
 import './Navbar.css'
 import logo from '../assets/logo.svg'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function Navbar({ cantidadCarrito }) {
+  const { isAuthenticated, user } = useAuth()
+
   return (
     <nav>
       <Link to="/">
@@ -22,9 +25,12 @@ function Navbar({ cantidadCarrito }) {
             {cantidadCarrito > 0 && <span>{cantidadCarrito}</span>}
           </Link>
         </li>
-        <li>
-          <Link to="/admin/crear-producto">CREAR PRODUCTO</Link>
-        </li>
+        {/* Mostrar enlace admin sólo a usuarios autenticados con role 'admin' */}
+        {isAuthenticated && user && user.role === 'admin' && (
+          <li>
+            <Link to="/admin/crear-producto">CREAR PRODUCTO</Link>
+          </li>
+        )}
       </ul>
     </nav>
   )

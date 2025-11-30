@@ -36,6 +36,12 @@ MONGO_URI=mongodb://localhost:27017/hermanosjota
 # Otras variables necesarias para tu entorno
 ```
 
+Si vas a usar autenticación JWT, añade también:
+
+```env
+JWT_SECRET=una_clave_larga_y_segura_aqui
+```
+
 - `PORT`: Puerto donde corre el backend (por defecto 3000)
 - `MONGO_URI`: Cadena de conexión a MongoDB local o remota
 
@@ -196,7 +202,27 @@ curl -X DELETE "https://itba.onrender.com/api/productos/<PRODUCT_ID>"
 ```
 
 Notas de seguridad y despliegue:
-- Actualmente no hay autenticación en estos endpoints; la interfaz admin está disponible públicamente en el frontend. Si vas a poner la app en producción, agrega protección (login, tokens o IP whitelist) antes de exponer las operaciones de escritura y borrado.
+- Los endpoints de administración (`POST /api/productos`, `PUT /api/productos/:id`, `DELETE /api/productos/:id`) ahora están protegidos y requieren autenticación JWT.
+- Para usar las operaciones admin desde el frontend o `curl`, incluye el header `Authorization: Bearer <TOKEN>` obtenido en el login.
+
+Ejemplo curl para crear un producto como admin (suponiendo que `TOKEN` es válido):
+
+```bash
+curl -X POST "https://itba.onrender.com/api/productos" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -F "nombre=Mi Producto" \
+  -F "descripcion=Descripción corta" \
+  -F "precio=1999.99" \
+  -F "stock=10" \
+  -F "medidas=100 x 35 x 200 cm" \
+  -F "materiales=Roble" \
+  -F "imagen=@./foto.jpg"
+```
+
+Si quieres administrar quién es admin, puedes:
+- Promover manualmente un usuario en la base de datos (cambiar `role` a `admin`).
+- Implementar endpoints adicionales para gestión de roles (solo admin) — puedo ayudar a añadirlos si lo deseas.
+
 - Asegúrate de que `VITE_API_URL` en tu frontend (Vercel) apunte a la URL pública del backend en Render (`https://itba.onrender.com`).
 
 ---
